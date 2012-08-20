@@ -26,8 +26,10 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   
+## WARNING
+Not tested at all
+  
 ## TODO
-* -Admin page to create event.-
 * A box with some todo style to implement on the page with shortcode.
 * Admin Dashboard Widget to download attendance list.
 * Ability to modify a already created event.
