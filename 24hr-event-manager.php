@@ -242,18 +242,19 @@ class EventManager
     public static function setRequiredReferences()
     {
         // css
-        //wp_register_style('EventManagerAdminCss', plugins_url('css/style.css', __FILE__));
+        wp_register_style('EventManagerAdminCss', plugins_url('assets/style.css', __FILE__));
 
         // load script
-		//wp_register_script('EventManagerModal', plugins_url('/js/jquery.simplemodal.1.4.1.min.js', __FILE__));
-		//wp_register_script('Placeholder', plugins_url('/js/jquery.placeholder.js', __FILE__));
+		wp_register_script('EventManagerModal', plugins_url('/assets/jquery.simplemodal.1.4.1.min.js', __FILE__));
+		wp_register_script('Placeholder', plugins_url('/assets/placeholder.min.js', __FILE__));
     }     
 }
 
 // hooks for install and update
 register_activation_hook(__FILE__, 'EventManager::install');
 add_action('plugins_loaded', 'EventManager::update');
-//add_action('admin_menu', 'EventManager::setRequiredReferences');
+add_action('admin_menu', 'EventManager::setRequiredReferences');
 
 // load admin page
 require_once('24hr-event-manager-admin.php');
+require_once('24hr-event-manager-dashboard-widget.php');
