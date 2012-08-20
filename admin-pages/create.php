@@ -9,7 +9,7 @@
                 <br/>
                 <input type="text" name="city" placeholder="Stad" />
                 <br/>
-                <input type="date" name="time" placeholder="Tid" />
+                <input type="date" id="timepick" name="time" placeholder="Tid" />
                 <br/>
                 <textarea name="description" placeholder="Beskrivning"></textarea>
                 <br/>
@@ -17,6 +17,15 @@
                 <br/>
                 <input type="submit" value="Spara event" />
             </form>
+            <script type="text/javascript">
+                jQuery(document).ready(function(){
+                    jQuery('#timepick').datetimepicker({
+                        dateFormat: 'yy-mm-dd',
+                        timeFormat: 'hh:mm:ss'
+                    });
+                    //2012-08-10 11:30:50
+                });
+            </script>
         </div>
     </div>    
 <?php else: ?>

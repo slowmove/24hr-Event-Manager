@@ -28,7 +28,7 @@ $events = $eventmanager->get_all_events();
                     <tr class="item<?php echo ($counter) % 2 == 0 ? " odd": ""; ?>" id="mailItem-<?php echo $event->id; ?>">
                         <td class="date"><?php
                             $date = new DateTime($event->time);
-                            echo $date->format('Y-m-d'); 
+                            echo $date->format('Y-m-d H:i:s'); 
                         ?></td>
                         <td class="">
                             <?php echo $event->name; ?>

@@ -9,8 +9,11 @@ function EventManager_add_page() {
     add_submenu_page(dirname(__file__), 'Skapa Event', 'Skapa Event', 'manage_options', 'EventManager_create_event', 'EventManagerCreate');
     
 	wp_enqueue_style('EventManagerAdminCss');
+    wp_enqueue_style('jQueryUICSS');
 	wp_enqueue_script('EventManagerModal');
-	wp_enqueue_script('Placeholder');      
+	wp_enqueue_script('Placeholder');
+    wp_enqueue_script('jqueryUI');
+    wp_enqueue_script('jqueryUItime');
 }
 
 /**

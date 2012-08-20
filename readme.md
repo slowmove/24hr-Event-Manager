@@ -28,12 +28,6 @@
   
 ## WARNING
 Not tested at all
-  
-## TODO
-* A box with some todo style to implement on the page with shortcode.
-* Admin Dashboard Widget to download attendance list.
-* Ability to modify a already created event.
-* Ability to remove user from the attendance list.
 
 ## Usage
 N/A

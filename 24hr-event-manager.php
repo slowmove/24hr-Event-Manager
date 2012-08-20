@@ -197,7 +197,7 @@ class EventManager
                 name VARCHAR(300) NOT NULL,
     	        address VARCHAR(300) NOT NULL,
     	        city VARCHAR(300) NOT NULL,
-                time VARCHAR(300) NOT NULL,
+                time DATETIME NOT NULL,
                 description VARCHAR(1000) NOT NULL,
                 places mediumint(9) NOT NULL,
 				UNIQUE KEY id (id)
@@ -242,11 +242,14 @@ class EventManager
     public static function setRequiredReferences()
     {
         // css
-        wp_register_style('EventManagerAdminCss', plugins_url('assets/style.css', __FILE__));
+        wp_register_style('EventManagerAdminCss', plugins_url('assets/css/style.css', __FILE__));
+		wp_register_style('jQueryUICSS', plugins_url('assets/css/smoothness/jquery-ui-1.8.23.custom.css', __FILE__));
 
         // load script
-		wp_register_script('EventManagerModal', plugins_url('/assets/jquery.simplemodal.1.4.1.min.js', __FILE__));
-		wp_register_script('Placeholder', plugins_url('/assets/placeholder.min.js', __FILE__));
+		wp_register_script('EventManagerModal', plugins_url('/assets/js/jquery.simplemodal.1.4.1.min.js', __FILE__));
+		wp_register_script('Placeholder', plugins_url('/assets/js/placeholder.min.js', __FILE__));		
+		wp_register_script('jqueryUI', plugins_url('/assets/js/jquery.ui.js', __FILE__));
+		wp_register_script('jqueryUItime', plugins_url('/assets/js/jquery.ui.timepicker.js', __FILE__));
     }     
 }
 
