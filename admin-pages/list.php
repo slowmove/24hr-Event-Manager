@@ -40,7 +40,7 @@ $events = $eventmanager->get_all_events();
                             <?php echo $event->city; ?>
                         </td>
                         <td class="">
-                            <?php echo $nr_of_users . " / " . $event->places ?>
+                            <?php echo (count($nr_of_users) > 0 ? $nr_of_users : 0) . " / " . $event->places ?>
                         </td>
                     </tr>
                 <?php 
