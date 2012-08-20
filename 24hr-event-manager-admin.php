@@ -4,8 +4,13 @@
  */
 add_action('admin_menu', 'EventManager_add_page');
 function EventManager_add_page() {
-	add_menu_page('Event Manager', 'Event Manager', 'manage_options', __FILE__, 'EventManagerList');
-    add_submenu_page(dirname(__file__), 'Skapa Event', 'Skapa Event', 'manage_options', __file__, 'EventManagerCreate');
+    add_menu_page('Event Manager', 'Event Manager', 'read_private_pages', dirname(__file__), 'EventManagerList');
+	add_submenu_page('Event Manager', 'Event Manager', 'manage_options', 'EventManager_list_events', 'EventManagerList');
+    add_submenu_page(dirname(__file__), 'Skapa Event', 'Skapa Event', 'manage_options', 'EventManager_create_event', 'EventManagerCreate');
+    
+	wp_enqueue_style('EventManagerAdminCss');
+	wp_enqueue_script('EventManagerModal');
+	wp_enqueue_script('Placeholder');      
 }
 
 /**
