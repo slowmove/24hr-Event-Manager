@@ -115,12 +115,14 @@ class EventManager
     
     public function get_upcoming_events()
     {
-        
+        $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents WHERE time > NOW()");
+        return $result;           
     }
     
     public function get_old_events()
     {
-        
+        $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents WHERE time < NOW()");
+        return $result;                
     }
     
     public function get_event($id)
@@ -209,7 +211,7 @@ class EventManager
             $sql = "CREATE TABLE " . $table_name . " (
     	        id mediumint(9) NOT NULL AUTO_INCREMENT,
                 event_id mediumint(9) NOT NULL,
-                user_id mediumint(9) NOT NULL
+                user_id mediumint(9) NOT NULL,
                 name VARCHAR(100) NOT NULL,
 				email VARCHAR(300) NOT NULL,
 				nr_to_come mediumint(9) NOT NULL,
