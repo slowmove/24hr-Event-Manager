@@ -33,7 +33,7 @@ if($nr_of_users->nr_to_come < $event->places):
                 <option value="5">5</option>
             </select>
             <br/>
-            <label for="interested_in_mote">Intresserad av kommunikation kring fler event</label>
+            <label for="interested_in_mote">Intresserad av fler event</label>
             <input type="checkbox" name="interested_in_more" class="interested_in_more"/>
             <br/>
             <textarea name="comment" class="comment" placeholder="Kommentar (ev. allergier m.m.)"></textarea>
