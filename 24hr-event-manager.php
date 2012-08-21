@@ -145,8 +145,7 @@ class EventManager
                                         'email' => $email,
                                         'nr_to_come' => $nr_to_come,
                                         'interested_in_more' => $interested_in_more,
-                                        'comment' => $comment,
-                                        'places' => $places
+                                        'comment' => $comment
                                       )
         );
         
@@ -160,7 +159,7 @@ class EventManager
     
     public function get_number_of_users_for_event($event_id)
     {
-        $result = $this->wpdb->get_results("SELECT SUM(nr_to_come) FROM $this->tableNameBookings where event_id = $event_id");
+        $result = $this->wpdb->get_results("SELECT SUM(nr_to_come) as nr_to_come FROM $this->tableNameBookings where event_id = $event_id");
         return $result[0];          
     }
     
@@ -176,6 +175,13 @@ class EventManager
         return $result;         
     }
     
+	/**
+	 * Shows the registration form on the site
+	 */
+	public function show_registration_form($event_id)
+	{
+		include('24hr-event-manager-form.php');
+	}
     
     //---------------------------------------------------------------------------------
     //     INSTALLATION
@@ -263,3 +269,4 @@ add_action('admin_menu', 'EventManager::setRequiredReferences');
 // load admin page
 require_once('24hr-event-manager-admin.php');
 require_once('24hr-event-manager-dashboard-widget.php');
+require_once('24hr-event-manager-widget.php');
