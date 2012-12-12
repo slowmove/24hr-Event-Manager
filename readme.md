@@ -4,7 +4,7 @@
 
   Description: Create Events and let users add themselves to the attendance list.
 
-  Version: 1.0
+  Version: 0.1
 
   Author: Erik Johansson
 
@@ -25,9 +25,11 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  
+
 ## WARNING
-Not tested at all
+The plugin isn't finished
 
 ## Usage
-N/A
+  The plugin will automatically create a events-holder page with the template in the plugin folder. For each event you create it will create a single event page using the other template file in the plugin folder.
+
+  There is two widgets available by the plugin - upcoming events and booking form for a single event.
