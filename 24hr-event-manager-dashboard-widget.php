@@ -5,7 +5,7 @@
 function eventmanager_dashboard_widget() {
     $eventmanager = new EventManager();
     $events = $eventmanager->get_upcoming_events();
-    $pluginRoot = '/wp-content/plugins/24hr-event-manager';
+    $pluginRoot = '/wp-content/plugins/24hr-Event-Manager';
     foreach($events as $e): 
         echo '<a target="_blank" href="'.$pluginRoot . '/classes/xls.php?event=' . $e->id . '&name=' . $e->name.'">Ladda ner bokningar för eventet: ' . $e->name . '</a><br/>';
     endforeach;

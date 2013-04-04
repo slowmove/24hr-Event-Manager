@@ -85,10 +85,10 @@ class Upcoming_Events_Widget extends WP_Widget {
             echo '<ul>';
             foreach($eventlist as $e)
             {
-                $date = new DateTime($e->time);
+                $date = new DateTime($e->eventdate);
                 echo '<li>
                         <span class="eventname">' . $e->name . '</span>
-                        <span class="date">'. $date->format('Y-m-d H:i') .'</span>
+                        <span class="date">'. $date->format('Y-m-d') .'</span>
                         <span class="location">'.$e->address. ", " . $e->city .'
                     </li>';
             }

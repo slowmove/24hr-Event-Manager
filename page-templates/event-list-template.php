@@ -19,7 +19,7 @@
         ?>
         <li>
             <a href="<?php echo get_permalink($e->pageid); ?>">
-                <span class="details"><?php echo date("d M Y", strtotime($e->time)); ?></span>
+                <span class="details"><?php echo date("d M Y", strtotime($e->eventdate)); ?></span>
                 <span class="details"><?php echo $e->name ?></span>
                 <span class="details"><?php echo $e->address . ", " . $e->city; ?></span>
             </a>

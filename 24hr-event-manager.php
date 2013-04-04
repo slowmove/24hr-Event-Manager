@@ -12,7 +12,7 @@
 	/*  Copyright 2011  Erik Johansson  (email : erik.johansson@24hr.se)
 
 	    This program is free software; you can redistribute it and/or modify
-	    it under the terms of the GNU General Public License, version 2, as
+	    it under the terms of the GNU General Public License, version 2, as 
 	    published by the Free Software Foundation.
 
 	    This program is distributed in the hope that it will be useful,
@@ -27,27 +27,27 @@
 class EventManager
 {
     // plugin db version
-    public static $twentyfourEventManagerDBVersion = "0.06";
+    public static $twentyfourEventManagerDBVersion = "0.11";  
 	public static $tables = array(
 		"events" => "event_manager_events",
 	    "bookings" => "event_manager_bookings",
 		"standby" => "event_manager_standby"
 	);
-
+	
     //---------------------------------------------------------------------------------
     //	singleton instance reference
-    //---------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------        
 	public static $singletonRef = NULL;
-
+	
 	public $tableNameEvents;
 	public $tableNameBookings;
 	public $tableNameStandby;
 
-    private $wpdb;
+    private $wpdb;    
 
     //---------------------------------------------------------------------------------
     //	creates an instance of the class, if no isntance was created before (singleton implementation)
-    //---------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------            
 	public static function getInstance()
 	{
 		if (self::$singletonRef == NULL)
@@ -56,75 +56,81 @@ class EventManager
 		}
 		return self::$singletonRef;
 	}
-
+    
     public function __construct()
     {
 	    global $wpdb;
 	    $this->wpdb = $wpdb;
-
+	    
 	    $this->tableNameEvents = $this->wpdb->prefix . EventManager::$tables['events'];
 	    $this->tableNameBookings = $this->wpdb->prefix . EventManager::$tables['bookings'];
 		$this->tableNameStandby = $this->wpdb->prefix . EventManager::$tables['standby'];
     }
-
+    
     /**
      * Events
      * Create / receive events
      */
-    public function create_event($name, $address, $city, $time, $description, $content, $places)
+    public function create_event($name, $address, $city, $eventdate, $starttime, $endtime, $description, $content, $content2, $places)
     {
         $result = $this->wpdb->insert($this->tableNameEvents,
                                       array(
                                         'name' => $name,
                                         'address' => $address,
                                         'city' => $city,
-                                        'time' => $time,
+                                        'eventdate' => $eventdate,
+										'starttime' => $starttime,
+										'endtime' => $endtime,
                                         'description' => $description,
 										'content' => $content,
+										'content2' => $content2,
                                         'places' => $places
                                       )
         );
-
+        
         if ($result)
         {
             $result = $this->wpdb->insert_id;
-
-			$event_holder_page_id = get_option("events_holder_page_id");
+			
+			$event_holder_page_id = get_option("events_holder_page_id");			
 			$event_page = array(
 			   'post_title' => $name,
 			   'post_status' => 'publish',
 			   'post_author' => 1,
 			   'post_type' => 'page',
 			   'post_parent' => $event_holder_page_id
-			);
+			);  		
 			$event_page_id = wp_insert_post( $event_page );
-			update_post_meta($event_page_id, "_wp_page_template", dirname( __FILE__ ) . "/page-templates/event-template.php");
+			update_post_meta($event_page_id, "_wp_page_template", dirname( __FILE__ ) . "/page-templates/event-template.php"); 
 			add_post_meta($event_page_id, "event_id", $result);
 			$this->set_page_for_event($result, $event_page_id);
         }
-
-        return $result;
+        
+        return $result;   
     }
-
-    public function update_event($id, $name, $address, $city, $time, $description, $content, $places)
+    
+    public function update_event($id, $name, $address, $city, $eventdate, $starttime, $endtime, $description, $content, $content2, $places)
     {
         $result = $this->wpdb->update($this->tableNameEvents,
                                     array(
                                         'name' => $name,
                                         'address' => $address,
                                         'city' => $city,
-                                        'time' => $time,
+                                        'eventdate' => $eventdate,
+										'starttime' => $starttime,
+										'endtime' => $endtime,
                                         'description' => $description,
 										'content' => $content,
+										'content2' => $content2,
                                         'places' => $places
                                     ),
                                     array(
                                         'id' => $id
                                     )
-        );
-        return $result;
+        );  
+        return $result;        
     }
-
+	
 	public function set_page_for_event($id, $pageid)
 	{
 		$result = $this->wpdb->update($this->tableNameEvents,
@@ -137,37 +143,37 @@ class EventManager
 		);
 		return $result;
 	}
-
+    
     public function get_all_events()
     {
         $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents");
-        return $result;
+        return $result;        
     }
-
+    
     public function get_upcoming_events()
     {
-        $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents WHERE time > NOW() ORDER BY time ASC");
-        return $result;
+        $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents WHERE eventdate >= NOW() ORDER BY time ASC");
+        return $result;           
     }
-
+    
     public function get_old_events()
     {
-        $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents WHERE time < NOW()");
-        return $result;
+        $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents WHERE eventdate < NOW()");
+        return $result;                
     }
-
+    
     public function get_event($id)
     {
         $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents where id = $id");
-        return $result[0];
+        return $result[0];        
     }
-
+	
 	public function get_event_by_pageid($pageid)
 	{
         $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameEvents where pageid = $pageid");
-        return $result[0];
+        return $result[0];  		
 	}
-
+    
     /**
      * Users - Bookings
      * set user for a event and get users for one event
@@ -185,11 +191,11 @@ class EventManager
                                         'comment' => $comment
                                       )
         );
-
+        
         if ($result)
         {
             $result = $this->wpdb->insert_id;
-
+			
 			$event = $this->get_event($event_id);
 			/**
 			 * Mail to the user
@@ -213,28 +219,28 @@ class EventManager
 			$htmlmail = "";
 			$this->html_mail("info@natverket100procent.se", "info@natverket100procent.se", $name . " har anmält sig till $event->name", $htmlmail);
         }
-
-        return $result;
+        
+        return $result;                 
     }
-
+    
     public function get_number_of_users_for_event($event_id)
     {
         $result = $this->wpdb->get_results("SELECT SUM(nr_to_come) as nr_to_come FROM $this->tableNameBookings where event_id = $event_id");
-        return $result[0];
+        return $result[0]->nr_to_come;          
     }
-
+    
     public function get_users_for_event($event_id)
     {
         $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameBookings where event_id = $event_id");
-        return $result;
+        return $result;         
     }
-
+	
 	public function get_specific_user_for_event($event_id, $user_id)
 	{
         $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameBookings where event_id = $event_id and user_id = $user_id");
-        return $result[0];
+        return $result[0];   		
 	}
-
+	
 	public function is_attendance($event_id, $user_id)
 	{
         $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameBookings where event_id = $event_id and user_id = $user_id");
@@ -243,7 +249,7 @@ class EventManager
 		else
 			return false;
 	}
-
+	
 	/**
 	 * Users - stand-by
 	 * set user on the stand by list for one event
@@ -261,13 +267,13 @@ class EventManager
                                         'comment' => $comment
                                       )
         );
-
+		
 		if( $result )
 		{
 			$result = $this->wpdb->insert_id;
 		}
-
-
+		
+		
 		$event = $this->get_event($event_id);
 		/**
 		 * Mail to the user
@@ -290,28 +296,28 @@ class EventManager
 		 */
 		$htmlmail = "";
 		$this->html_mail("info@natverket100procent.se", "info@natverket100procent.se", $name . " har anmält sig till $event->name", $htmlmail);
-
+		
 		return $result;
 	}
-
+	
 	public function remove_user_from_standby_list($event_id, $user_id)
 	{
-        $result = $this->wpdb->query($this->wpdb->prepare("DELETE FROM $this->tableNameStandby WHERE event_id = $event_id AND user_id = $user_id "));
-        return $result;
+        $result = $this->wpdb->query($this->wpdb->prepare("DELETE FROM $this->tableNameStandby WHERE event_id = $event_id AND user_id = $user_id "));  
+        return $result;  		
 	}
-
+	
 	public function get_standby_users_for_event($event_id)
 	{
 		$result = $this->wpdb->get_results("SELECT * FROM $this->tableNameStandby where event_id = $event_id");
 		return $result;
 	}
-
+	
 	public function get_specific_standby_user_for_event($event_id, $user_id)
 	{
         $result = $this->wpdb->get_results("SELECT * FROM $this->tableNameStandby where event_id = $event_id and user_id = $user_id");
-        return $result[0];
+        return $result[0];   		
 	}
-
+	
 	/**
 	 * AJAX enabled functions
 	 */
@@ -324,22 +330,22 @@ class EventManager
 		}
 		global $wpdb;
 		$dbtable = $wpdb->prefix . EventManager::$tables['bookings'];
-        $result = $wpdb->query($wpdb->prepare("DELETE FROM $dbtable WHERE event_id = $event_id AND user_id = $user_id "));
-        return $result;
+        $result = $wpdb->query($wpdb->prepare("DELETE FROM $dbtable WHERE event_id = $event_id AND user_id = $user_id "));  
+        return $result;    		        
     }
-
+	
 	public function move_standby_user_to_event($event_id = "", $user_id = "")
 	{
 		if( empty($event_id) || empty($user_id) )
 		{
 			$event_id = $_POST["eventId"];
 			$user_id = $_POST["userId"];
-		}
+		}		
 		$eventhandler = new EventManager();
 		$user = $eventhandler->get_specific_standby_user_for_event($event_id, $user_id);
-
+		
 		$moved = $eventhandler->add_user_to_event($event_id, $user_id, $user->name, $user->email, $user->nr_to_come, $user->interested_in_more, $user->comment);
-
+		
 		if( $moved )
 		{
 			$eventhandler->remove_user_from_standby_list($event_id, $user_id);
@@ -350,8 +356,8 @@ class EventManager
 		{
 			return false;
 		}
-	}
-
+	}	
+    
 	/**
 	 * Shows the registration form on the site
 	 */
@@ -359,13 +365,13 @@ class EventManager
 	{
 		include('24hr-event-manager-form.php');
 	}
-
+	
 	/**
 	 * Makes it easier to send html mail with utf-8 charset
 	 * @param string $receiver
 	 * @param string $sender
-	 * @param string $subject
-	 * @param string $message
+	 * @param string $subject 
+	 * @param string $message 
 	 * @return bool $success
 	 */
 	public function html_mail($receiver, $sender, $subject, $message)
@@ -376,27 +382,27 @@ class EventManager
 		$headers .= 'Content-type: text/html; charset=UTF-8\r\n';
 		$headers .= "Content-Transfer-Encoding: 8bit\r\n";
 		add_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
-
+		
 		$success = wp_mail($receiver, $subject, $message, $headers);
-
+		
 		return $success;
 	}
-
+    
     //---------------------------------------------------------------------------------
     //     INSTALLATION
     //	install function, ie create or update the database
-    //---------------------------------------------------------------------------------
-    public static function install()
+    //---------------------------------------------------------------------------------    
+    public static function install() 
     {
-
+        
         global $wpdb;
-
+        
         $installed_ver = get_option( "twentyfourEventManagerDBVersion" );
-        if($installed_ver != EventManager::$twentyfourEventManagerDBVersion )
+        if($installed_ver != EventManager::$twentyfourEventManagerDBVersion ) 
         {
-
+			
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
+			
 			// events table
             $table_name = $wpdb->prefix . EventManager::$tables['events'];
             $sql = "CREATE TABLE " . $table_name . " (
@@ -404,15 +410,18 @@ class EventManager
                 name VARCHAR(300) NOT NULL,
     	        address VARCHAR(300) NOT NULL,
     	        city VARCHAR(300) NOT NULL,
-                time DATETIME NOT NULL,
+				eventdate DATE NOT NULL,
+                starttime TIME NOT NULL,
+				endtime TIME NOT NULL,
                 description VARCHAR(1000) NOT NULL,
 				content VARCHAR(5000) NOT NULL,
+				content2 VARCHAR(5000) NOT NULL,
                 places mediumint(9) NOT NULL,
 				pageid mediumint(9),
 				UNIQUE KEY id (id)
             );";
 			dbDelta($sql);
-
+			
 			// bookings table
 			$table_name = $wpdb->prefix . EventManager::$tables['bookings'];
             $sql = "CREATE TABLE " . $table_name . " (
@@ -422,12 +431,13 @@ class EventManager
                 name VARCHAR(100) NOT NULL,
 				email VARCHAR(300) NOT NULL,
 				nr_to_come mediumint(9) NOT NULL,
-				interested_in_more smallint DEFAULT 0,
+				interested_in_more smallint DEFAULT 0,	            	        
 				comment VARCHAR(500),
+				bookingdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 				UNIQUE KEY id (id)
             );";
 		    dbDelta($sql);
-
+			
 			// stand by table
 			$table_name = $wpdb->prefix . EventManager::$tables['standby'];
 			$sql = "CREATE TABLE " . $table_name . " (
@@ -437,17 +447,18 @@ class EventManager
                 name VARCHAR(100) NOT NULL,
 				email VARCHAR(300) NOT NULL,
 				nr_to_come mediumint(9) NOT NULL,
-				interested_in_more smallint DEFAULT 0,
+				interested_in_more smallint DEFAULT 0,	            	        
 				comment VARCHAR(500),
+				bookingdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 				UNIQUE KEY id (id)
 			);";
 			dbDelta($sql);
-
+ 
 			//echo $sql;
             update_option("twentyfourEventManagerDBVersion", EventManager::$twentyfourEventManagerDBVersion);
 
         }
-
+        
 		if( !get_option("events_holder_page_id") )
 		{
 			$events_holder = array(
@@ -456,13 +467,13 @@ class EventManager
 			   'post_author' => 1,
 			   'post_type' => 'page',
 			   'menu_order' => 98
-			);
+			);  		
 			$events_holder_page_id = wp_insert_post( $events_holder );
-			update_post_meta($events_holder_page_id, "_wp_page_template", dirname( __FILE__ ) . "/page-templates/event-list-template.php");
+			update_post_meta($events_holder_page_id, "_wp_page_template", dirname( __FILE__ ) . "/page-templates/event-list-template.php"); 
 			add_option("events_holder_page_id", $events_holder_page_id);
 		}
     }
-
+    
 	/**
 	 * Checks if a database table update is needed
 	 * Then run the install function
@@ -470,7 +481,7 @@ class EventManager
     public static function update()
     {
         $installed_ver = get_option( "twentyfourEventManagerDBVersion" );
-        if($installed_ver != EventManager::$twentyfourEventManagerDBVersion)
+        if($installed_ver != EventManager::$twentyfourEventManagerDBVersion) 
         {
             EventManager::install();
         }
@@ -484,12 +495,12 @@ class EventManager
 
         // load script
 		wp_register_script('EventManagerModal', plugins_url('/assets/js/jquery.simplemodal.1.4.1.min.js', __FILE__));
-		wp_register_script('Placeholder', plugins_url('/assets/js/placeholder.min.js', __FILE__));
+		wp_register_script('Placeholder', plugins_url('/assets/js/placeholder.min.js', __FILE__));		
 		wp_register_script('jqueryUI', plugins_url('/assets/js/jquery.ui.js', __FILE__));
 		wp_register_script('jqueryUIdate', plugins_url('/assets/js/jquery.ui.datepicker.js', __FILE__));
 		wp_register_script('jqueryUItime', plugins_url('/assets/js/jquery.ui.timepicker.js', __FILE__));
         wp_register_script('mainAdmin', plugins_url('/assets/js/main.js', __FILE__));
-    }
+    }     
 }
 
 // hooks for install and update

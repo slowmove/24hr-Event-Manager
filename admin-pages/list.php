@@ -36,8 +36,8 @@ $old_events = $eventmanager->get_old_events();
 							<?php echo $event->id; ?>
 						</td>
                         <td class="date"><?php
-                            $date = new DateTime($event->time);
-                            echo $date->format('Y-m-d H:i:s'); 
+                            $date = new DateTime($event->eventdate);
+                            echo $date->format('Y-m-d'); 
                         ?></td>
                         <td class="">
                             <?php echo $event->name; ?>
@@ -49,9 +49,8 @@ $old_events = $eventmanager->get_old_events();
                             <?php echo $event->city; ?>
                         </td>
                         <td class="">
-                            <?php
-							$nr = $nr_of_users->nr_to_come;
-							echo isset($nr) ? $nr . " / " . $event->places : "0 / " . $event->places
+                            <?php							
+							echo isset($nr_of_users) ? $nr_of_users . " / " . $event->places : "0 / " . $event->places
 							?>
                         </td>
 						<td>
@@ -98,8 +97,8 @@ $old_events = $eventmanager->get_old_events();
 								<?php echo $event->id; ?>
 							</td>
 							<td class="date"><?php
-								$date = new DateTime($event->time);
-								echo $date->format('Y-m-d H:i:s'); 
+                            $date = new DateTime($event->eventdate);
+                            echo $date->format('Y-m-d'); 
 							?></td>
 							<td class="">
 								<?php echo $event->name; ?>
@@ -113,7 +112,7 @@ $old_events = $eventmanager->get_old_events();
 							<td class="">
 								<?php
 								$nr = $nr_of_users->nr_to_come;
-								echo isset($nr) ? $nr . " / " . $event->places : "0 / " . $event->places
+								echo isset($nr) ? $nr . " / " . $event->places : "0 / " . $event->places;
 								?>
 							</td>
 						</tr>
@@ -143,8 +142,6 @@ $users = $eventmanager->get_users_for_event($_GET["eventid"]);
                 <tr>
                     <th class="date">Namn</th>
                     <th>Mail</th>
-                    <th>Antal</th>
-                    <th>Intresserad i framtida events</th>
                     <th>Kommentar</th>
                     <th>Action</th>
                 </tr>
@@ -163,12 +160,6 @@ $users = $eventmanager->get_users_for_event($_GET["eventid"]);
                         </td>
                         <td class="">
                             <?php echo $user->email; ?>
-                        </td>
-                        <td class="">
-                            <?php echo $user->nr_to_come; ?>
-                        </td>									
-                        <td class="">
-                            <?php echo $user->interested_in_more ? "Ja" : "Nej"; ?>
                         </td>
                         <td class="">
                             <?php echo $user->comment; ?>
@@ -202,8 +193,6 @@ $users = $eventmanager->get_standby_users_for_event($_GET["eventid"]);
             <tr>
                 <th class="date">Namn</th>
                 <th>Mail</th>
-                <th>Antal</th>
-                <th>Intresserad i framtida events</th>
                 <th>Kommentar</th>
                 <th>Action</th>
             </tr>
@@ -222,12 +211,6 @@ $users = $eventmanager->get_standby_users_for_event($_GET["eventid"]);
                     </td>
                     <td class="">
                         <?php echo $user->email; ?>
-                    </td>
-                    <td class="">
-                        <?php echo $user->nr_to_come; ?>
-                    </td>
-                    <td class="">
-                        <?php echo $user->interested_in_more ? "Ja" : "Nej"; ?>
                     </td>
                     <td class="">
                         <?php echo $user->comment; ?>

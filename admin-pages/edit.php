@@ -16,7 +16,6 @@ $events = $eventmanager->get_upcoming_events();
                     <th>Namn</th>
                     <th>Adress</th>
                     <th>Stad</th>
-                    <th>Deltagare</th>
 					<th>Ändra</th>
                 </tr>
             </thead>
@@ -35,8 +34,8 @@ $events = $eventmanager->get_upcoming_events();
 							<?php echo $event->id; ?>
 						</td>
                         <td class="date"><?php
-                            $date = new DateTime($event->time);
-                            echo $date->format('Y-m-d H:i:s'); 
+                            $date = new DateTime($event->eventdate);
+                            echo $date->format('Y-m-d'); 
                         ?></td>
                         <td class="">
                             <?php echo $event->name; ?>
@@ -46,12 +45,6 @@ $events = $eventmanager->get_upcoming_events();
                         </td>									
                         <td class="">
                             <?php echo $event->city; ?>
-                        </td>
-                        <td class="">
-                            <?php
-							$nr = $nr_of_users->nr_to_come;
-							echo isset($nr) ? $nr . " / " . $event->places : "0 / " . $event->places
-							?>
                         </td>
 						<td>
 							<input type="button" value="Redigera" onclick="location.href=location.href + '&event_id=<?php echo $event->id; ?>'" />
@@ -73,7 +66,7 @@ $events = $eventmanager->get_upcoming_events();
         tinyMCE.init({
             theme : "advanced",
             mode : "exact",
-            elements : "description, content",
+            elements : "description, content, content2",
             height : "320"
         });
         </script>
@@ -90,27 +83,29 @@ $events = $eventmanager->get_upcoming_events();
                 <br/>
                 <input type="text" name="city" value="<?php echo $e->city ?>" />
                 <br/>
-                <input type="date" id="timepick" name="time" value="<?php echo $e->time ?>" />
+				<label for="eventdate">Datum</label>
+                <input type="date" id="eventdate" name="eventdate" value="<?php echo $e->eventdate ?>" />
+                <br/>
+                <label for="starttime">Starttid</label>
+                <input type="text" id="startime" name="starttime" value="<?php echo $e->starttime ?>" />
+                <br/>
+                <label for="endtime">Sluttid</label>
+                <input type="text" id="endtime" name="endtime" value="<?php echo $e->endtime ?>" />
                 <br/>
                 <label for="description">Kort beskrivning</label>
                 <textarea id="description" name="description"><?php echo $e->description ?></textarea>
                 <br/>
-                <label for="content">Information</label>
-                <textarea id="content" name="content"><?php echo $e->content ?></textarea>
+                <label for="content">Information vänsterfält</label>
+                <textarea id="content" name="content"><?php echo stripslashes($e->content) ?></textarea>
+                <br/>
+                <label for="content2">Information högerfält</label>
+                <textarea id="content" name="content2"><?php echo stripslashes($e->content2) ?></textarea>				
                 <br/>
                 <input type="text" name="places" value="<?php echo $e->places ?>" />
                 <br/>
                 <input type="submit" value="Spara event" />
             </form>
-            <script type="text/javascript">
-                jQuery(document).ready(function(){
-                    jQuery('#timepick').datetimepicker({
-                        dateFormat: 'yy-mm-dd',
-                        timeFormat: 'hh:mm:ss'
-                    });
-                    //2012-08-10 11:30:50
-                });
-            </script>
+
         </div>
     </div>    
 <?php else: ?>
@@ -120,11 +115,14 @@ $events = $eventmanager->get_upcoming_events();
     $name = $_POST["name"];
     $address = $_POST["address"];
     $city = $_POST["city"];
-    $time = $_POST["time"];
+    $eventdate = $_POST["eventdate"];
+    $starttime = $_POST["starttime"];
+    $endtime = $_POST["endtime"];
     $description = $_POST["description"];
     $content = $_POST["content"];
+	$content2 = $_POST["content2"];
     $places = $_POST["places"];
-    $res = $eventmanager->update_event($id, $name, $address, $city, $time, $description, $content, $places);
+    $res = $eventmanager->update_event($id, $name, $address, $city, $eventdate, $starttime, $endtime, $description, $content, $content2, $places);
     if($res):
     ?>
     <div class="wrap">
